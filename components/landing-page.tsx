@@ -208,17 +208,9 @@ export function LandingPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative h-96 lg:h-[500px] bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 rounded-2xl overflow-hidden"
+              className="relative h-96 lg:h-[500px]"
             >
               <WaterfallEffect />
-              {/* Overlay content */}
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="text-center text-white">
-                  <Code2 className="h-16 w-16 mx-auto mb-4 text-white/80" />
-                  <h3 className="text-2xl font-bold mb-2">Schema Magic</h3>
-                  <p className="text-white/80">Watch your schemas come to life</p>
-                </div>
-              </div>
             </motion.div>
           </div>
         </div>

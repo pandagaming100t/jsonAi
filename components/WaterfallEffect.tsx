@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useEffect, useState } from "react"
@@ -50,7 +49,7 @@ export function WaterfallEffect() {
         const bottomWidth = 60 // End wide
         const currentWidth = topWidth + (bottomWidth - topWidth) * progress
         const centerOffset = (Math.random() - 0.5) * currentWidth
-        
+
         particles.push({
           id: i,
           x: 50 + centerOffset, // Center position with width variation
@@ -67,10 +66,10 @@ export function WaterfallEffect() {
     // Create rain particles around the waterfall
     const createRainDrops = () => {
       const drops: RainDrop[] = []
-      for (let i = 0; i < 120; i++) {
+      for (let i = 0; i < 1200; i++) { // Multiply by 10, so 120 * 10 = 1200
         drops.push({
           id: i,
-          x: 30 + Math.random() * 40, // Spread across area
+          x: Math.random() * 100, // first of rain in whole hero section
           y: Math.random() * 100,
           speed: 1.5 + Math.random() * 2,
           length: 8 + Math.random() * 15,
@@ -83,7 +82,7 @@ export function WaterfallEffect() {
     // Create smoke/mist at the base
     const createSmokeParticles = () => {
       const smoke: SmokeParticle[] = []
-      for (let i = 0; i < 25; i++) {
+      for (let i = 0; i < 625; i++) { // Multiply by 25, so 25 * 25 = 625
         smoke.push({
           id: i,
           x: 25 + Math.random() * 50, // Spread at base
@@ -118,10 +117,10 @@ export function WaterfallEffect() {
     <div className="waterfall-container">
       {/* Main waterfall stream - widening effect */}
       <div className={`waterfall-stream ${isDark ? 'stream-electric' : 'stream-blue'}`} />
-      
+
       {/* Core bright center */}
       <div className={`waterfall-core-center ${isDark ? 'core-electric' : 'core-blue'}`} />
-      
+
       {/* Waterfall particles with natural flow */}
       {waterfallParticles.map((particle) => (
         <div
@@ -138,7 +137,7 @@ export function WaterfallEffect() {
           }}
         />
       ))}
-      
+
       {/* Rain drops */}
       {rainDrops.map((drop) => (
         <div
@@ -154,7 +153,7 @@ export function WaterfallEffect() {
           }}
         />
       ))}
-      
+
       {/* Smoke/mist particles at base */}
       {smokeParticles.map((smoke) => (
         <div
