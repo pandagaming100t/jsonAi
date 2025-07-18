@@ -66,14 +66,14 @@ export function WaterfallEffect() {
     // Create rain particles around the waterfall
     const createRainDrops = () => {
       const drops: RainDrop[] = []
-      for (let i = 0; i < 1200; i++) { // Multiply by 10, so 120 * 10 = 1200
+      for (let i = 0; i < 2000; i++) { // Increase to 2000 particles
         drops.push({
           id: i,
-          x: Math.random() * 100, // first of rain in whole hero section
+          x: Math.random() * 100, // Rain across whole hero section
           y: Math.random() * 100,
           speed: 1.5 + Math.random() * 2,
-          length: 8 + Math.random() * 15,
-          opacity: 0.2 + Math.random() * 0.4
+          length: 12 + Math.random() * 20, // Longer rain drops
+          opacity: 0.3 + Math.random() * 0.6 // More visible opacity
         })
       }
       setRainDrops(drops)
@@ -82,15 +82,15 @@ export function WaterfallEffect() {
     // Create smoke/mist at the base
     const createSmokeParticles = () => {
       const smoke: SmokeParticle[] = []
-      for (let i = 0; i < 625; i++) { // Multiply by 25, so 25 * 25 = 625
+      for (let i = 0; i < 1000; i++) { // Increase to 1000 particles
         smoke.push({
           id: i,
-          x: 25 + Math.random() * 50, // Spread at base
-          y: 70 + Math.random() * 25, // Bottom area
-          size: 15 + Math.random() * 25,
-          opacity: 0.1 + Math.random() * 0.3,
-          drift: (Math.random() - 0.5) * 2,
-          speed: 0.3 + Math.random() * 0.5
+          x: 20 + Math.random() * 60, // Wider spread at base
+          y: 65 + Math.random() * 30, // Bottom area
+          size: 20 + Math.random() * 40, // Larger smoke particles
+          opacity: 0.2 + Math.random() * 0.5, // More visible opacity
+          drift: (Math.random() - 0.5) * 3,
+          speed: 0.3 + Math.random() * 0.7
         })
       }
       setSmokeParticles(smoke)
