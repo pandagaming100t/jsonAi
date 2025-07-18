@@ -22,6 +22,7 @@ import Link from "next/link"
 import { useSession, signIn } from "next-auth/react"
 import { UserNav } from "@/components/user-nav"
 import { WaterfallEffect } from "@/components/WaterfallEffect"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const features = [
   {
@@ -94,26 +95,26 @@ export function LandingPage() {
               <Link href="#testimonials" className="text-gray-600 hover:text-purple-600 transition-colors">
                 Testimonials
               </Link>
-              <Link href="#pricing" className="text-gray-600 hover:text-purple-600 transition-colors">
-                Pricing
-              </Link>
-              {session ? (
-                <div className="flex items-center space-x-4">
-                  <Link href="/builder">
-                    <Button variant="outline">Go to Builder</Button>
-                  </Link>
-                  <UserNav />
-                </div>
-              ) : (
-                <div className="flex items-center space-x-4">
-                  <Button variant="outline" onClick={() => signIn()}>
-                    Sign In
-                  </Button>
-                  <Button onClick={() => signIn()}>
-                    Get Started
-                  </Button>
-                </div>
-              )}
+              <div className="flex items-center space-x-4">
+                <ThemeToggle />
+                {session ? (
+                  <>
+                    <Link href="/builder">
+                      <Button variant="outline">Go to Builder</Button>
+                    </Link>
+                    <UserNav />
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" onClick={() => signIn()}>
+                      Sign In
+                    </Button>
+                    <Button onClick={() => signIn()}>
+                      Get Started
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
 
             <div className="md:hidden">
@@ -138,9 +139,9 @@ export function LandingPage() {
               <Link href="#testimonials" className="block text-gray-600 hover:text-purple-600">
                 Testimonials
               </Link>
-              <Link href="#pricing" className="block text-gray-600 hover:text-purple-600">
-                Pricing
-              </Link>
+              <div className="flex justify-center mb-4">
+                <ThemeToggle />
+              </div>
               {session ? (
                 <div className="space-y-2">
                   <Link href="/builder">
@@ -299,118 +300,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Simple, Transparent Pricing
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Start free and scale as you grow. No hidden fees, no surprises.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Free Plan */}
-            <Card className="relative">
-              <CardHeader>
-                <CardTitle className="text-2xl">Free</CardTitle>
-                <div className="text-4xl font-bold">$0</div>
-                <CardDescription>Perfect for getting started</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Up to 5 schemas</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Basic AI assistance</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Export to JSON</span>
-                  </div>
-                </div>
-                <Button className="w-full" variant="outline" onClick={() => signIn()}>
-                  Get Started Free
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="relative border-purple-200 dark:border-purple-800">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium">
-                  Most Popular
-                </span>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-2xl">Pro</CardTitle>
-                <div className="text-4xl font-bold">$19</div>
-                <CardDescription>For professional developers</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Unlimited schemas</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Advanced AI features</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Team collaboration</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Priority support</span>
-                  </div>
-                </div>
-                <Button className="w-full" onClick={() => signIn()}>
-                  Start Pro Trial
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Enterprise Plan */}
-            <Card className="relative">
-              <CardHeader>
-                <CardTitle className="text-2xl">Enterprise</CardTitle>
-                <div className="text-4xl font-bold">Custom</div>
-                <CardDescription>For large organizations</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Everything in Pro</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>SSO integration</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>Custom deployment</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <span>24/7 support</span>
-                  </div>
-                </div>
-                <Button className="w-full" variant="outline">
-                  Contact Sales
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+      
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
@@ -462,9 +352,9 @@ export function LandingPage() {
               <h3 className="font-semibold mb-4">Product</h3>
               <div className="space-y-2 text-gray-400">
                 <Link href="#features" className="block hover:text-white transition-colors">Features</Link>
-                <Link href="#pricing" className="block hover:text-white transition-colors">Pricing</Link>
                 <Link href="/builder" className="block hover:text-white transition-colors">Builder</Link>
                 <Link href="#" className="block hover:text-white transition-colors">API</Link>
+                <Link href="#" className="block hover:text-white transition-colors">Documentation</Link>
               </div>
             </div>
             
