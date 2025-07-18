@@ -21,7 +21,7 @@ import {
 import Link from "next/link"
 import { useSession, signIn } from "next-auth/react"
 import { UserNav } from "@/components/user-nav"
-import EarthAnimation from "@/components/WaterfallEffect"
+import StormBackground from "@/components/WaterfallEffect"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 const features = [
@@ -76,9 +76,12 @@ export function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen relative overflow-hidden bg-black">
+      {/* Storm Background */}
+      <StormBackground />
+      
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b">
+      <nav className="sticky top-0 z-50 bg-black/60 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
@@ -89,10 +92,10 @@ export function LandingPage() {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="#features" className="text-gray-600 hover:text-purple-600 transition-colors">
+              <Link href="#features" className="text-white/80 hover:text-purple-400 transition-colors">
                 Features
               </Link>
-              <Link href="#testimonials" className="text-gray-600 hover:text-purple-600 transition-colors">
+              <Link href="#testimonials" className="text-white/80 hover:text-purple-400 transition-colors">
                 Testimonials
               </Link>
               <div className="flex items-center space-x-4">
@@ -131,12 +134,12 @@ export function LandingPage() {
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-gray-900 border-t">
+          <div className="md:hidden bg-black/80 backdrop-blur-md border-t border-white/10">
             <div className="px-4 py-4 space-y-4">
-              <Link href="#features" className="block text-gray-600 hover:text-purple-600">
+              <Link href="#features" className="block text-white/80 hover:text-purple-400">
                 Features
               </Link>
-              <Link href="#testimonials" className="block text-gray-600 hover:text-purple-600">
+              <Link href="#testimonials" className="block text-white/80 hover:text-purple-400">
                 Testimonials
               </Link>
               <div className="flex justify-center mb-4">
@@ -173,13 +176,13 @@ export function LandingPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
                 Build JSON Schemas
                 <span className="block bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   Visually & Intelligently
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8">
+              <p className="text-xl md:text-2xl text-white/90 mb-8">
                 Create, validate, and manage JSON schemas with our powerful visual builder, 
                 enhanced by AI assistance and real-time collaboration.
               </p>
@@ -203,14 +206,20 @@ export function LandingPage() {
               </div>
             </motion.div>
 
-            {/* Right side - Waterfall Animation */}
+            {/* Right side - Visual Element */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative h-96 lg:h-[500px]"
+              className="relative h-96 lg:h-[500px] flex items-center justify-center"
             >
-              <EarthAnimation />
+              <div className="text-center">
+                <div className="w-64 h-64 rounded-full border-4 border-white/20 flex items-center justify-center backdrop-blur-sm bg-white/5">
+                  <div className="text-6xl font-bold text-white/80">
+                    JSON
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -224,7 +233,7 @@ export function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white dark:bg-gray-800">
+      <section id="features" className="py-20 bg-black/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -262,7 +271,7 @@ export function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section id="testimonials" className="py-20 bg-black/70 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">

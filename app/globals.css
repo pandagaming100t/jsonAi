@@ -54,7 +54,12 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    background: black;
+    overflow-x: hidden;
+    @apply text-foreground;
   }
 }
 
