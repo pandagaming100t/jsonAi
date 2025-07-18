@@ -1,13 +1,10 @@
-
 "use client";
 
 import { useEffect, useRef } from 'react';
-import { useTheme } from 'next-themes';
 import * as THREE from 'three';
 
-export default function StormBackground() {
+export default function EarthBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -19,50 +16,25 @@ export default function StormBackground() {
     let scene: THREE.Scene;
     let camera: THREE.PerspectiveCamera;
     let renderer: THREE.WebGLRenderer;
-    let cloudParticles: THREE.Mesh[] = [];
-    let rainParticles: THREE.Points;
-    let flash: THREE.PointLight;
-    let rain: THREE.Points;
-    let rainGeo: THREE.BufferGeometry;
+    let earth: THREE.Mesh;
     let animationId: number;
-    const rainCount = 15000;
 
     const init = () => {
       // Scene setup
       scene = new THREE.Scene();
-      
+
       camera = new THREE.PerspectiveCamera(
-        60,
+        45,
         window.innerWidth / window.innerHeight,
-        1,
+        0.1,
         1000
       );
-      camera.position.z = 1;
-      camera.rotation.x = 1.16;
-      camera.rotation.y = -0.12;
-      camera.rotation.z = 0.27;
-
-      // Lighting
-      const ambient = new THREE.AmbientLight(0x555555);
-      scene.add(ambient);
-
-      const directionalLight = new THREE.DirectionalLight(0xffeedd);
-      directionalLight.position.set(0, 0, 1);
-      scene.add(directionalLight);
-
-      // Lightning flash
-      flash = new THREE.PointLight(0x062d89, 30, 500, 1.7);
-      flash.position.set(200, 300, 100);
-      scene.add(flash);
+      camera.position.set(0, 0, 2.5);
 
       // Renderer setup
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      scene.fog = new THREE.FogExp2(
-        theme === 'dark' ? 0x11111f : 0x333344, 
-        0.002
-      );
-      renderer.setClearColor(scene.fog.color, 0.8);
       renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 1);
       renderer.domElement.style.position = 'fixed';
       renderer.domElement.style.top = '0';
       renderer.domElement.style.left = '0';
@@ -71,95 +43,85 @@ export default function StormBackground() {
       renderer.domElement.style.height = '100%';
       container.appendChild(renderer.domElement);
 
-      // Create rain
-      const positions = [];
-      const sizes = [];
-      rainGeo = new THREE.BufferGeometry();
-      
-      for (let i = 0; i < rainCount; i++) {
-        positions.push(Math.random() * 400 - 200);
-        positions.push(Math.random() * 500 - 250);
-        positions.push(Math.random() * 400 - 200);
-        sizes.push(30);
-      }
-      
-      rainGeo.setAttribute(
-        'position',
-        new THREE.BufferAttribute(new Float32Array(positions), 3)
-      );
-      rainGeo.setAttribute(
-        'size',
-        new THREE.BufferAttribute(new Float32Array(sizes), 1)
-      );
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+      scene.add(ambientLight);
 
-      const rainMaterial = new THREE.PointsMaterial({
-        color: theme === 'dark' ? 0xaaaaaa : 0x888888,
-        size: 0.1,
-        transparent: true
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(1, 1, 1);
+      scene.add(directionalLight);
+
+      // Create Earth
+      const geometry = new THREE.SphereGeometry(1, 64, 64);
+
+      // Create earth material with texture-like appearance
+      const material = new THREE.MeshPhongMaterial({
+        color: 0x2233ff,
+        shininess: 100,
+        specular: 0x222222,
       });
-      
-      rain = new THREE.Points(rainGeo, rainMaterial);
-      scene.add(rain);
 
-      // Create clouds
-      const cloudGeo = new THREE.PlaneGeometry(500, 500);
-      const cloudMaterial = new THREE.MeshLambertMaterial({
-        color: theme === 'dark' ? 0x444444 : 0x666666,
+      // Add some variation to make it look more earth-like
+      const earthTexture = createEarthTexture();
+      material.map = earthTexture;
+
+      earth = new THREE.Mesh(geometry, material);
+      scene.add(earth);
+
+      // Add atmosphere glow
+      const atmosphereGeometry = new THREE.SphereGeometry(1.1, 64, 64);
+      const atmosphereMaterial = new THREE.MeshBasicMaterial({
+        color: 0x88ccff,
         transparent: true,
-        opacity: 0.6
+        opacity: 0.2,
+        side: THREE.BackSide,
       });
-
-      for (let p = 0; p < 25; p++) {
-        const cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
-        cloud.position.set(
-          Math.random() * 800 - 400,
-          500,
-          Math.random() * 500 - 450
-        );
-        cloud.rotation.x = 1.16;
-        cloud.rotation.y = -0.12;
-        cloud.rotation.z = Math.random() * 360;
-        cloud.material.opacity = 0.4;
-        cloudParticles.push(cloud);
-        scene.add(cloud);
-      }
+      const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+      scene.add(atmosphere);
 
       animate();
+    };
+
+    const createEarthTexture = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 256;
+      const context = canvas.getContext('2d')!;
+
+      // Create a simple earth-like pattern
+      const gradient = context.createLinearGradient(0, 0, 512, 256);
+      gradient.addColorStop(0, '#1e40af');
+      gradient.addColorStop(0.3, '#3b82f6');
+      gradient.addColorStop(0.5, '#22c55e');
+      gradient.addColorStop(0.7, '#84cc16');
+      gradient.addColorStop(1, '#1e40af');
+
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, 512, 256);
+
+      // Add some random "continents"
+      context.fillStyle = '#16a34a';
+      for (let i = 0; i < 20; i++) {
+        const x = Math.random() * 512;
+        const y = Math.random() * 256;
+        const radius = Math.random() * 30 + 10;
+        context.beginPath();
+        context.arc(x, y, radius, 0, Math.PI * 2);
+        context.fill();
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      return texture;
     };
 
     const animate = () => {
       animationId = requestAnimationFrame(animate);
 
-      // Animate clouds
-      cloudParticles.forEach((p) => {
-        p.rotation.z -= 0.002;
-      });
-
-      // Animate rain
-      const positions = rainGeo.attributes.position.array as Float32Array;
-      for (let i = 0; i < positions.length; i += 3) {
-        positions[i + 1] -= 0.5; // Move rain down
-        if (positions[i + 1] < -250) {
-          positions[i + 1] = 250; // Reset to top
-        }
-      }
-      rainGeo.attributes.position.needsUpdate = true;
-
-      rain.position.z -= 0.222;
-      if (rain.position.z < -200) {
-        rain.position.z = 0;
-      }
-
-      // Lightning effect
-      if (Math.random() > 0.93 || flash.power > 100) {
-        if (flash.power < 100) {
-          flash.position.set(
-            Math.random() * 400, 
-            300 + Math.random() * 200, 
-            100
-          );
-        }
-        flash.power = 50 + Math.random() * 500;
+      // Rotate the earth
+      if (earth) {
+        earth.rotation.y += 0.005;
       }
 
       renderer.render(scene, camera);
@@ -183,9 +145,8 @@ export default function StormBackground() {
       if (renderer) {
         renderer.dispose();
       }
-      cloudParticles = [];
     };
-  }, [theme]);
+  }, []);
 
   return (
     <div 

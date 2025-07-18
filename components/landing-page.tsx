@@ -21,7 +21,7 @@ import {
 import Link from "next/link"
 import { useSession, signIn } from "next-auth/react"
 import { UserNav } from "@/components/user-nav"
-import StormBackground from "@/components/WaterfallEffect"
+import EarthBackground from "@/components/WaterfallEffect"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 const features = [
@@ -78,8 +78,8 @@ export function LandingPage() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-black">
       {/* Storm Background */}
-      <StormBackground />
-      
+      <EarthBackground />
+
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-black/60 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,7 +90,7 @@ export function LandingPage() {
                 Schema Builder Pro
               </span>
             </div>
-            
+
             <div className="hidden md:flex items-center space-x-8">
               <Link href="#features" className="text-white/80 hover:text-purple-400 transition-colors">
                 Features
@@ -319,7 +319,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      
+
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600">
@@ -366,7 +366,7 @@ export function LandingPage() {
                 </Button>
               </div>
             </div>
-            
+
             <div>
               <h3 className="font-semibold mb-4">Product</h3>
               <div className="space-y-2 text-gray-400">
@@ -376,7 +376,7 @@ export function LandingPage() {
                 <Link href="#" className="block hover:text-white transition-colors">Documentation</Link>
               </div>
             </div>
-            
+
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <div className="space-y-2 text-gray-400">
@@ -387,7 +387,7 @@ export function LandingPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
             <p>&copy; 2024 Schema Builder Pro. All rights reserved.</p>
           </div>
