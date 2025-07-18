@@ -21,7 +21,7 @@ import {
 import Link from "next/link"
 import { useSession, signIn } from "next-auth/react"
 import { UserNav } from "@/components/user-nav"
-import WaterfallEffect from "@/components/WaterfallEffect"
+import VideoBackground from "@/components/WaterfallEffect"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 const features = [
@@ -210,7 +210,7 @@ export function LandingPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden"
             >
-              <WaterfallEffect />
+              <VideoBackground />
             </motion.div>
           </div>
         </div>
