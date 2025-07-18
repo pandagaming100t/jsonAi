@@ -52,7 +52,7 @@ function SphereComponent() {
   );
 }
 
-const EarthEmbed = () => (
+const WaterfallEffect = () => (
   <div style={{ width: '100%', height: '100%' }}>
     <Canvas
       camera={{ position: [0, 0, 3], fov: 50 }}
@@ -65,4 +65,4 @@ const EarthEmbed = () => (
   </div>
 );
 
-export default EarthEmbed;
+export default WaterfallEffect;
