@@ -4,53 +4,111 @@
 import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 
+interface WaterfallParticle {
+  id: number
+  x: number
+  y: number
+  speed: number
+  size: number
+  opacity: number
+  delay: number
+}
+
+interface RainDrop {
+  id: number
+  x: number
+  y: number
+  speed: number
+  length: number
+  opacity: number
+}
+
+interface SmokeParticle {
+  id: number
+  x: number
+  y: number
+  size: number
+  opacity: number
+  drift: number
+  speed: number
+}
+
 export function WaterfallEffect() {
   const { theme } = useTheme()
-  const [particles, setParticles] = useState<Array<{ id: number; left: number; duration: number; delay: number; size: number; opacity: number }>>([])
-  const [floatingParticles, setFloatingParticles] = useState<Array<{ id: number; left: number; top: number; duration: number; delay: number; size: number }>>([])
+  const [waterfallParticles, setWaterfallParticles] = useState<WaterfallParticle[]>([])
+  const [rainDrops, setRainDrops] = useState<RainDrop[]>([])
+  const [smokeParticles, setSmokeParticles] = useState<SmokeParticle[]>([])
 
   useEffect(() => {
+    // Create main waterfall stream particles
     const createWaterfallParticles = () => {
-      const newParticles = []
-      // Create gentle waterfall particles
-      for (let i = 0; i < 15; i++) {
-        newParticles.push({
+      const particles: WaterfallParticle[] = []
+      for (let i = 0; i < 80; i++) {
+        // Create widening effect - narrower at top, wider at bottom
+        const progress = Math.random()
+        const topWidth = 8 // Start narrow
+        const bottomWidth = 60 // End wide
+        const currentWidth = topWidth + (bottomWidth - topWidth) * progress
+        const centerOffset = (Math.random() - 0.5) * currentWidth
+        
+        particles.push({
           id: i,
-          left: 48 + Math.random() * 4, // Concentrated around center
-          duration: 2 + Math.random() * 1.5,
-          delay: Math.random() * 2,
-          size: 3 + Math.random() * 4,
-          opacity: 0.4 + Math.random() * 0.4
+          x: 50 + centerOffset, // Center position with width variation
+          y: Math.random() * 100,
+          speed: 0.8 + Math.random() * 1.2,
+          size: 1.5 + Math.random() * 2,
+          opacity: 0.3 + Math.random() * 0.5,
+          delay: Math.random() * 2
         })
       }
-      setParticles(newParticles)
+      setWaterfallParticles(particles)
     }
 
-    const createFloatingParticles = () => {
-      const newFloating = []
-      // Create ambient floating particles
-      for (let i = 0; i < 8; i++) {
-        newFloating.push({
+    // Create rain particles around the waterfall
+    const createRainDrops = () => {
+      const drops: RainDrop[] = []
+      for (let i = 0; i < 120; i++) {
+        drops.push({
           id: i,
-          left: 30 + Math.random() * 40,
-          top: 20 + Math.random() * 60,
-          duration: 4 + Math.random() * 2,
-          delay: Math.random() * 3,
-          size: 2 + Math.random() * 3
+          x: 30 + Math.random() * 40, // Spread across area
+          y: Math.random() * 100,
+          speed: 1.5 + Math.random() * 2,
+          length: 8 + Math.random() * 15,
+          opacity: 0.2 + Math.random() * 0.4
         })
       }
-      setFloatingParticles(newFloating)
+      setRainDrops(drops)
+    }
+
+    // Create smoke/mist at the base
+    const createSmokeParticles = () => {
+      const smoke: SmokeParticle[] = []
+      for (let i = 0; i < 25; i++) {
+        smoke.push({
+          id: i,
+          x: 25 + Math.random() * 50, // Spread at base
+          y: 70 + Math.random() * 25, // Bottom area
+          size: 15 + Math.random() * 25,
+          opacity: 0.1 + Math.random() * 0.3,
+          drift: (Math.random() - 0.5) * 2,
+          speed: 0.3 + Math.random() * 0.5
+        })
+      }
+      setSmokeParticles(smoke)
     }
 
     createWaterfallParticles()
-    createFloatingParticles()
-    
+    createRainDrops()
+    createSmokeParticles()
+
     const waterfallInterval = setInterval(createWaterfallParticles, 3000)
-    const floatingInterval = setInterval(createFloatingParticles, 5000)
-    
+    const rainInterval = setInterval(createRainDrops, 2500)
+    const smokeInterval = setInterval(createSmokeParticles, 4000)
+
     return () => {
       clearInterval(waterfallInterval)
-      clearInterval(floatingInterval)
+      clearInterval(rainInterval)
+      clearInterval(smokeInterval)
     }
   }, [])
 
@@ -58,40 +116,58 @@ export function WaterfallEffect() {
 
   return (
     <div className="waterfall-container">
-      {/* Main beam */}
-      <div className={`waterfall-beam ${isDark ? 'beam-electric' : 'beam-blue'}`} />
+      {/* Main waterfall stream - widening effect */}
+      <div className={`waterfall-stream ${isDark ? 'stream-electric' : 'stream-blue'}`} />
       
-      {/* Core glow */}
-      <div className={`waterfall-core ${isDark ? 'core-electric' : 'core-blue'}`} />
+      {/* Core bright center */}
+      <div className={`waterfall-core-center ${isDark ? 'core-electric' : 'core-blue'}`} />
       
-      {/* Waterfall particles */}
-      {particles.map((particle) => (
+      {/* Waterfall particles with natural flow */}
+      {waterfallParticles.map((particle) => (
         <div
           key={`waterfall-${particle.id}`}
-          className={`waterfall-drop ${isDark ? 'drop-electric' : 'drop-blue'}`}
+          className={`waterfall-particle ${isDark ? 'particle-electric' : 'particle-blue'}`}
           style={{
-            left: `${particle.left}%`,
-            animationDuration: `${particle.duration}s`,
-            animationDelay: `${particle.delay}s`,
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
             width: `${particle.size}px`,
-            height: `${particle.size * 3}px`,
-            opacity: particle.opacity
+            height: `${particle.size * 2}px`,
+            opacity: particle.opacity,
+            animationDelay: `${particle.delay}s`,
+            animationDuration: `${2 + particle.speed}s`
           }}
         />
       ))}
       
-      {/* Floating ambient particles */}
-      {floatingParticles.map((particle) => (
+      {/* Rain drops */}
+      {rainDrops.map((drop) => (
         <div
-          key={`floating-${particle.id}`}
-          className={`floating-particle ${isDark ? 'particle-electric' : 'particle-blue'}`}
+          key={`rain-${drop.id}`}
+          className={`rain-drop ${isDark ? 'rain-electric' : 'rain-blue'}`}
           style={{
-            left: `${particle.left}%`,
-            top: `${particle.top}%`,
-            animationDuration: `${particle.duration}s`,
-            animationDelay: `${particle.delay}s`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`
+            left: `${drop.x}%`,
+            top: `${drop.y}%`,
+            height: `${drop.length}px`,
+            opacity: drop.opacity,
+            animationDuration: `${1.5 + drop.speed}s`,
+            animationDelay: `${Math.random() * 2}s`
+          }}
+        />
+      ))}
+      
+      {/* Smoke/mist particles at base */}
+      {smokeParticles.map((smoke) => (
+        <div
+          key={`smoke-${smoke.id}`}
+          className={`smoke-particle ${isDark ? 'smoke-electric' : 'smoke-blue'}`}
+          style={{
+            left: `${smoke.x}%`,
+            top: `${smoke.y}%`,
+            width: `${smoke.size}px`,
+            height: `${smoke.size}px`,
+            opacity: smoke.opacity,
+            animationDuration: `${4 + smoke.speed}s`,
+            animationDelay: `${Math.random() * 3}s`
           }}
         />
       ))}
