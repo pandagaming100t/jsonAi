@@ -66,6 +66,13 @@
   100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
 }
 
+@keyframes beam-flow {
+  0% { transform: translateY(-100vh) scaleY(0); opacity: 0; }
+  5% { opacity: 1; scaleY: 1; }
+  95% { opacity: 1; }
+  100% { transform: translateY(100vh) scaleY(1); opacity: 0; }
+}
+
 @keyframes electric-glow {
   0%, 100% { 
     box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
@@ -74,6 +81,17 @@
   50% { 
     box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
     opacity: 1;
+  }
+}
+
+@keyframes beam-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor;
+    opacity: 0.6;
+  }
+  50% { 
+    box-shadow: 0 0 30px currentColor, 0 0 60px currentColor, 0 0 90px currentColor;
+    opacity: 0.9;
   }
 }
 
@@ -88,10 +106,59 @@
   z-index: 0;
 }
 
+.waterfall-beam {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 100%;
+  opacity: 0.4;
+  z-index: 1;
+}
+
+.waterfall-beam.beam-blue {
+  background: linear-gradient(to bottom, 
+    rgba(59, 130, 246, 0.8) 0%,
+    rgba(29, 78, 216, 0.9) 30%,
+    rgba(59, 130, 246, 0.8) 70%,
+    rgba(29, 78, 216, 0.6) 100%
+  );
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  animation: beam-glow 3s ease-in-out infinite;
+}
+
+.waterfall-beam.beam-electric {
+  background: linear-gradient(to bottom, 
+    rgba(139, 92, 246, 0.8) 0%,
+    rgba(168, 85, 247, 0.9) 30%,
+    rgba(192, 132, 252, 0.8) 70%,
+    rgba(139, 92, 246, 0.6) 100%
+  );
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+  animation: beam-glow 2s ease-in-out infinite, electric-glow 0.8s ease-in-out infinite alternate;
+}
+
+.waterfall-beam-particle {
+  position: absolute;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: beam-flow linear infinite;
+  z-index: 2;
+}
+
+.waterfall-beam-particle.particle-blue {
+  background: linear-gradient(to bottom, #60a5fa, #3b82f6, #2563eb);
+  box-shadow: 0 0 8px #3b82f6;
+}
+
+.waterfall-beam-particle.particle-electric {
+  background: linear-gradient(to bottom, #a78bfa, #8b5cf6, #7c3aed);
+  box-shadow: 0 0 8px #8b5cf6;
+  animation: beam-flow linear infinite, electric-glow 0.3s ease-in-out infinite alternate;
+}
+
 .waterfall-drop {
   position: absolute;
-  width: 3px;
-  height: 20px;
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   animation: waterfall linear infinite;
 }
