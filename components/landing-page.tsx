@@ -166,10 +166,11 @@ export function LandingPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Content */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6">
@@ -178,11 +179,11 @@ export function LandingPage() {
                   Visually & Intelligently
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8">
                 Create, validate, and manage JSON schemas with our powerful visual builder, 
                 enhanced by AI assistance and real-time collaboration.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4">
                 {session ? (
                   <Link href="/builder">
                     <Button size="lg" className="text-lg px-8 py-4">
@@ -199,6 +200,24 @@ export function LandingPage() {
                 <Button variant="outline" size="lg" className="text-lg px-8 py-4">
                   Watch Demo
                 </Button>
+              </div>
+            </motion.div>
+
+            {/* Right side - Waterfall Animation */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative h-96 lg:h-[500px] bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 rounded-2xl overflow-hidden"
+            >
+              <WaterfallEffect />
+              {/* Overlay content */}
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="text-center text-white">
+                  <Code2 className="h-16 w-16 mx-auto mb-4 text-white/80" />
+                  <h3 className="text-2xl font-bold mb-2">Schema Magic</h3>
+                  <p className="text-white/80">Watch your schemas come to life</p>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -233,13 +252,12 @@ export function LandingPage() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className={`h-full hover:shadow-lg transition-shadow ${index === 0 ? 'relative overflow-hidden' : ''}`}>
-                  {index === 0 && <WaterfallEffect />}
-                  <CardHeader className="relative z-10">
+                <Card className="h-full hover:shadow-lg transition-shadow">
+                  <CardHeader>
                     <feature.icon className="h-12 w-12 text-purple-600 mb-4" />
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="relative z-10">
+                  <CardContent>
                     <CardDescription className="text-base">
                       {feature.description}
                     </CardDescription>
