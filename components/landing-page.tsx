@@ -21,6 +21,7 @@ import {
 import Link from "next/link"
 import { useSession, signIn } from "next-auth/react"
 import { UserNav } from "@/components/user-nav"
+import { WaterfallEffect } from "@/components/WaterfallEffect"
 
 const features = [
   {
@@ -231,12 +232,13 @@ export function LandingPage() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className="h-full hover:shadow-lg transition-shadow">
-                  <CardHeader>
+                <Card className={`h-full hover:shadow-lg transition-shadow ${index === 0 ? 'relative overflow-hidden' : ''}`}>
+                  {index === 0 && <WaterfallEffect />}
+                  <CardHeader className="relative z-10">
                     <feature.icon className="h-12 w-12 text-purple-600 mb-4" />
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="relative z-10">
                     <CardDescription className="text-base">
                       {feature.description}
                     </CardDescription>
