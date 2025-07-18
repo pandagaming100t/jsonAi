@@ -1,9 +1,18 @@
 export interface SchemaField {
   id: string;
   name: string;
-  type: 'String' | 'Number' | 'Nested';
-  value?: string | number;
+  type: 'String' | 'Number' | 'Boolean' | 'Array' | 'Object' | 'Date' | 'Email' | 'URL' | 'UUID' | 'Integer' | 'Float' | 'Enum' | 'Nested';
+  value?: string | number | boolean;
   children?: SchemaField[];
+  enumValues?: string[];
+  arrayItemType?: string;
+  required?: boolean;
+  description?: string;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+  pattern?: string;
 }
 
 export interface SavedSchema {

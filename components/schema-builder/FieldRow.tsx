@@ -7,6 +7,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { SchemaField, FieldRowProps } from '@/types/schema';
 import { NestedFields } from './NestedFields';
 import { generateId } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
+import { GripVertical } from 'lucide-react';
+
+interface FieldRowProps {
+  field: SchemaField;
+  index: number;
+  onUpdate: (index: number, field: SchemaField) => void;
+  onDelete: (index: number) => void;
+  onAddNested: (index: number) => void;
+  level?: number;
+}
 
 export const FieldRow: React.FC<FieldRowProps> = ({
   field,
@@ -63,6 +75,149 @@ export const FieldRow: React.FC<FieldRowProps> = ({
 
   const indentLevel = level * 24;
 
+  const fieldTypes = [
+    'String', 'Number', 'Boolean', 'Array', 'Object', 'Date', 
+    'Email', 'URL', 'UUID', 'Integer', 'Float', 'Enum', 'Nested'
+  ];
+
+  const getDefaultValue = () => {
+    switch (localField.type) {
+      case 'String':
+      case 'Email':
+      case 'URL':
+      case 'UUID':
+        return '';
+      case 'Number':
+      case 'Integer':
+      case 'Float':
+        return 0;
+      case 'Boolean':
+        return false;
+      case 'Date':
+        return new Date().toISOString().split('T')[0];
+      case 'Array':
+        return [];
+      case 'Object':
+      case 'Nested':
+        return {};
+      default:
+        return '';
+    }
+  };
+
+  const renderValueInput = () => {
+    switch (localField.type) {
+      case 'Boolean':
+        return (
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              checked={localField.value as boolean}
+              onChange={(checked) => handleFieldChange({value: checked})}
+            />
+            <span className="text-sm">Default: {localField.value ? 'true' : 'false'}</span>
+          </div>
+        );
+      case 'Enum':
+        return (
+          <div className="flex flex-col gap-2">
+            <Input
+              placeholder="Comma-separated values (e.g., red,blue,green)"
+              value={localField.enumValues?.join(',') || ''}
+              onChange={(e) => handleFieldChange({enumValues: e.target.value.split(',').map(v => v.trim())})}
+            />
+            <Select value={localField.value as string} onValueChange={(value) => handleFieldChange({value: value})}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Select default value" />
+              </SelectTrigger>
+              <SelectContent>
+                {localField.enumValues?.map((enumValue) => (
+                  <SelectItem key={enumValue} value={enumValue}>
+                    {enumValue}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        );
+      case 'Array':
+        return (
+          <Select value={localField.arrayItemType || 'String'} onValueChange={(value) => handleFieldChange({arrayItemType: value})}>
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Array item type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="String">String</SelectItem>
+              <SelectItem value="Number">Number</SelectItem>
+              <SelectItem value="Boolean">Boolean</SelectItem>
+              <SelectItem value="Object">Object</SelectItem>
+            </SelectContent>
+          </Select>
+        );
+      case 'Date':
+        return (
+          <Input
+            type="date"
+            value={localField.value as string || ''}
+            onChange={(e) => handleFieldChange({value: e.target.value})}
+          />
+        );
+      case 'Number':
+      case 'Integer':
+      case 'Float':
+        return (
+          <div className="flex gap-2">
+            <Input
+              placeholder="Default value"
+              type="number"
+              value={localField.value?.toString() || ''}
+              onChange={(e) => handleFieldChange({value: Number(e.target.value)})}
+            />
+            <Input
+              placeholder="Min"
+              type="number"
+              value={localField.min?.toString() || ''}
+              onChange={(e) => handleFieldChange({min: e.target.value ? Number(e.target.value) : undefined})}
+            />
+            <Input
+              placeholder="Max"
+              type="number"
+              value={localField.max?.toString() || ''}
+              onChange={(e) => handleFieldChange({max: e.target.value ? Number(e.target.value) : undefined})}
+            />
+          </div>
+        );
+      case 'Nested':
+      case 'Object':
+        return null;
+      default:
+        return (
+          <div className="flex gap-2">
+            <Input
+              placeholder="Default value"
+              value={localField.value?.toString() || ''}
+              onChange={(e) => handleFieldChange({value: e.target.value})}
+            />
+            {(localField.type === 'String' || localField.type === 'Email' || localField.type === 'URL') && (
+              <>
+                <Input
+                  placeholder="Min Length"
+                  type="number"
+                  value={localField.minLength?.toString() || ''}
+                  onChange={(e) => handleFieldChange({minLength: e.target.value ? Number(e.target.value) : undefined})}
+                />
+                <Input
+                  placeholder="Max Length"
+                  type="number"
+                  value={localField.maxLength?.toString() || ''}
+                  onChange={(e) => handleFieldChange({maxLength: e.target.value ? Number(e.target.value) : undefined})}
+                />
+              </>
+            )}
+          </div>
+        );
+    }
+  };
+
   return (
     <Card className="mb-4 transition-all duration-200 hover:shadow-md" style={{ marginLeft: `${indentLevel}px` }}>
       <CardContent className="p-4">
@@ -81,7 +236,7 @@ export const FieldRow: React.FC<FieldRowProps> = ({
               )}
             </Button>
           )}
-          
+
           <div className="flex-1 flex items-center gap-3 flex-wrap">
             <Input
               placeholder="Field name"
@@ -89,48 +244,29 @@ export const FieldRow: React.FC<FieldRowProps> = ({
               onChange={(e) => handleFieldChange({ name: e.target.value })}
               className="w-40 min-w-[160px]"
             />
-            
+
             <Select value={localField.type} onValueChange={handleTypeChange}>
               <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="String">String</SelectItem>
-                <SelectItem value="Number">Number</SelectItem>
-                <SelectItem value="Nested">Nested</SelectItem>
+                {fieldTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
-            {localField.type === 'String' && (
-              <Input
-                placeholder="Default value"
-                value={localField.value as string}
-                onChange={(e) => handleFieldChange({ value: e.target.value })}
-                className="w-40 min-w-[160px]"
-              />
-            )}
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            checked={localField.required || false}
+            onChange={(checked) => handleFieldChange({required: checked})}
+          />
+          <span className="text-sm">Required</span>
+        </div>
 
-            {localField.type === 'Number' && (
-              <Input
-                type="number"
-                placeholder="Default value"
-                value={localField.value as number}
-                onChange={(e) => handleFieldChange({ value: parseFloat(e.target.value) || 0 })}
-                className="w-40 min-w-[160px]"
-              />
-            )}
-
-            {localField.type === 'Nested' && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addNestedField}
-                className="flex items-center gap-1 hover:bg-purple-50 hover:border-purple-200 dark:hover:bg-purple-900/20"
-              >
-                <Plus className="h-4 w-4" />
-                Add Field
-              </Button>
-            )}
+            
           </div>
 
           <Button
@@ -142,6 +278,27 @@ export const FieldRow: React.FC<FieldRowProps> = ({
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
+            {localField.type !== 'Nested' && localField.type !== 'Object' && (
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium">Value Configuration:</label>
+          {renderValueInput()}
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        <Input
+          placeholder="Description (optional)"
+          value={localField.description || ''}
+          onChange={(e) => handleFieldChange({description: e.target.value})}
+        />
+        {localField.type === 'String' && (
+          <Input
+            placeholder="Pattern (regex, optional)"
+            value={localField.pattern || ''}
+            onChange={(e) => handleFieldChange({pattern: e.target.value})}
+          />
+        )}
+      </div>
 
         {localField.type === 'Nested' && isExpanded && localField.children && (
           <div className="mt-4 border-l-2 border-purple-200 dark:border-purple-800 pl-4 relative">

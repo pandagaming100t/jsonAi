@@ -11,21 +11,37 @@ interface JsonPreviewProps {
 }
 
 export const JsonPreview: React.FC<JsonPreviewProps> = ({ fields }) => {
-  const convertToJson = (fields: SchemaField[]): Record<string, any> => {
-    const result: Record<string, any> = {};
-    
+  const generateJsonFromFields = (fields: SchemaField[]): any => {
+    const result: any = {};
+
     fields.forEach(field => {
-      if (field.type === 'Nested' && field.children) {
-        result[field.name] = convertToJson(field.children);
+      if (field.type === 'Nested' || field.type === 'Object') {
+        result[field.name] = field.children ? generateJsonFromFields(field.children) : {};
+      } else if (field.type === 'Array') {
+        result[field.name] = field.value || [];
+      } else if (field.type === 'Boolean') {
+        result[field.name] = field.value !== undefined ? field.value : false;
+      } else if (field.type === 'Date') {
+        result[field.name] = field.value || new Date().toISOString().split('T')[0];
+      } else if (field.type === 'Email') {
+        result[field.name] = field.value || 'example@email.com';
+      } else if (field.type === 'URL') {
+        result[field.name] = field.value || 'https://example.com';
+      } else if (field.type === 'UUID') {
+        result[field.name] = field.value || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+      } else if (field.type === 'Enum') {
+        result[field.name] = field.value || (field.enumValues && field.enumValues[0]) || '';
+      } else if (field.type === 'Number' || field.type === 'Integer' || field.type === 'Float') {
+        result[field.name] = field.value !== undefined ? field.value : 0;
       } else {
-        result[field.name] = field.value;
+        result[field.name] = field.value || '';
       }
     });
-    
+
     return result;
   };
 
-  const jsonOutput = convertToJson(fields);
+  const jsonOutput = generateJsonFromFields(fields);
   const jsonString = JSON.stringify(jsonOutput, null, 2);
 
   const copyToClipboard = async () => {
