@@ -1,12 +1,15 @@
+
 "use client";
 
-import { useRef, useEffect } from "react";
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-import gsap from "gsap";
+import { Canvas } from '@react-three/fiber';
+import { useRef, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+import gsap from 'gsap';
 
-export function EarthEmbed() {
+function SphereComponent() {
   const groupRef = useRef<THREE.Group>(null);
+  
   useEffect(() => {
     if (groupRef.current) {
       gsap.to(groupRef.current.scale, {
@@ -32,11 +35,13 @@ export function EarthEmbed() {
       });
     }
   }, []);
+  
   useFrame(() => {
     if (groupRef.current) {
       groupRef.current.rotation.y += 0.01;
     }
   });
+  
   return (
     <group ref={groupRef}>
       <mesh>
@@ -46,3 +51,18 @@ export function EarthEmbed() {
     </group>
   );
 }
+
+const EarthEmbed = () => (
+  <div style={{ width: '100%', height: '100%' }}>
+    <Canvas
+      camera={{ position: [0, 0, 3], fov: 50 }}
+      style={{ background: 'transparent' }}
+    >
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} />
+      <SphereComponent />
+    </Canvas>
+  </div>
+);
+
+export default EarthEmbed;
