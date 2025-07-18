@@ -1127,6 +1127,10 @@ video {
 .bg-background\/80 {
   background-color: hsl(var(--background) / 0.8);
 }
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+}
 .bg-black\/80 {
   background-color: rgb(0 0 0 / 0.8);
 }
@@ -1205,6 +1209,9 @@ video {
 .bg-white\/80 {
   background-color: rgb(255 255 255 / 0.8);
 }
+.bg-opacity-20 {
+  --tw-bg-opacity: 0.2;
+}
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
@@ -1251,6 +1258,10 @@ video {
 }
 .fill-yellow-400 {
   fill: #facc15;
+}
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 .p-0 {
   padding: 0px;
